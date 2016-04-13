@@ -2,7 +2,7 @@ import tkinter as tk
 
 master = tk.Tk()
 
-Audiofiles = ["A.wav"] #I'll add more sounds to this. 
+Audiofiles = ["A.wav", "B.wav", "C.wav", "D.wav", "E.wav", "F.wav", "G.wav"] 
 buttonlst = ['A','B','C','D','E','F','G']
 
 
