@@ -9,7 +9,7 @@ buttonlst = ['A','B','C','D','E','F','G']
 class Pianokey(tk.Button):
     def __init__(self, text, *args):
         self.text = text
-        tk.Button.__init__(self, height= 12, width=4, text = self.text, command=self.callback,*args)
+        tk.Button.__init__(self, master=master, height= 12, width=4, text = self.text, command=self.callback,*args)
         
     def callback(self):
         for n,i in enumerate(buttonlst):
