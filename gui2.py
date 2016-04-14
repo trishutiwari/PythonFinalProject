@@ -1,9 +1,10 @@
 import tkinter as tk
+import winsound as sound
 
 master = tk.Tk()
 
 Audiofiles = ["A.wav", "B.wav", "C.wav", "D.wav", "E.wav", "F.wav", "G.wav"] 
-buttonlst = ['A','B','C','D','E','F','G']
+buttonlst = ['A','B','C','D','E','F','G','A#','F#','C#','D#','G#']
 
 
 class Pianokey(tk.Button):
@@ -15,8 +16,7 @@ class Pianokey(tk.Button):
     def callback(self):
         for n,i in enumerate(buttonlst):
             if i == self.text:
-                print(i)
-                #play Audiofiles[n] 
+                sound.PlaySound(Audiofiles[n],sound.SND_FILENAME)
 
 class Blackkey(Pianokey):
     def __init__(self, text):
@@ -60,5 +60,7 @@ Gsharp.grid(row=1, column=4, columnspan=2, sticky="N")
 
 Asharp = Blackkey(text='A#')
 Asharp.grid(row=1, column=5, columnspan=2, sticky="N")
+
+master.resizable(width=False, height=False)
 
 master.mainloop()
