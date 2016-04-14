@@ -47,18 +47,18 @@ B = Pianokey(text='B')
 B.grid(row=1, column=6)
 
 Csharp = Blackkey(text='C#')
-Csharp.grid(row=0, column=0, rowspan=2, columnspan=2, sticky="N")
+Csharp.grid(row=1, column=0, columnspan=2, sticky="N")
 
 Dsharp = Blackkey(text='D#')
-Dsharp.grid(row=0, column=1, rowspan=2, columnspan=2, sticky="N")
+Dsharp.grid(row=1, column=1, columnspan=2, sticky="N")
 
 Fsharp = Blackkey(text='F#')
-Fsharp.grid(row=0, column=3, rowspan=2, columnspan=2, sticky="N")
+Fsharp.grid(row=1, column=3, columnspan=2, sticky="N")
 
 Gsharp = Blackkey(text='G#')
-Gsharp.grid(row=0, column=4, rowspan=2, columnspan=2, sticky="N")
+Gsharp.grid(row=1, column=4, columnspan=2, sticky="N")
 
 Asharp = Blackkey(text='A#')
-Asharp.grid(row=0, column=5, rowspan=2, columnspan=2, sticky="N")
+Asharp.grid(row=1, column=5, columnspan=2, sticky="N")
 
 master.mainloop()
