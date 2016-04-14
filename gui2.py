@@ -7,10 +7,10 @@ buttonlst = ['A','B','C','D','E','F','G']
 
 
 class Pianokey(tk.Button):
-    def __init__(self, text, *args):
+    def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=36, width=12, text=self.text,\
-                           command=self.callback, bg="white", *args)
+                           command=self.callback, bg="white")
         
     def callback(self):
         for n,i in enumerate(buttonlst):
@@ -19,10 +19,10 @@ class Pianokey(tk.Button):
                 #play Audiofiles[n] 
 
 class Blackkey(Pianokey):
-    def __init__(self, text, *args):
+    def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=15, width=8, text=self.text,\
-                           command=self.callback, bg="black", *args)
+                           command=self.callback, bg="black")
     
 
 C = Pianokey(text='C')
