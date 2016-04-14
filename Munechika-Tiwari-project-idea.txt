@@ -1,0 +1,5 @@
+Team members: Kai and Trishita
+Goals: To make a piano that the user can play by cliking on keys/touching the screen. (We might want to add a recording 
+facility that will allow the user to record a song and save it in a file).
+Tools we want to learn: creating and saving files, (also how to get a sound output on pressing a button)
+Title: Virtual Piano 
