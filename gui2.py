@@ -22,7 +22,7 @@ class Blackkey(Pianokey):
     def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=15, width=8, text=self.text,\
-                           command=self.callback, bg="black")
+                           command=self.callback, bg="black", fg="white")
     
 
 C = Pianokey(text='C')
