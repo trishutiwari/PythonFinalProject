@@ -9,8 +9,6 @@ master = tk.Tk()
 Audiofreq = [261,293,329,349,391,440,493,279,311,369,415,466] #just add the frequencies in the order that you put the names in buttonlst
 buttonlst = ['A','B','C','D','E','F','G','Csharp','Dsharp','Fsharp','Gsharp','Asharp']
 
-<<<<<<< HEAD
-=======
 
 # Each row represents 1 octave - rounded each freq to the nearest whole number; source: http://www.seventhstring.com/resources/notefrequencies.html
 # 9 octaves total; pianos typically go from freq ~28 to 4186
@@ -40,12 +38,9 @@ buttonlst = ['A','B','C','D','E','F','G','Csharp','Dsharp','Fsharp','Gsharp','As
 #for i in range(len(Audiofreq)):
 #    globals()[(str(buttonlst[i])+'{}').format(octave) = Pianokey(text=buttonlst[i])
 
-
-
->>>>>>> origin/master
 class Pianokey(tk.Button):
     boo = False
-    songlist = []
+    songlist = ""
     def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=36, width=12, text=self.text,\
@@ -56,7 +51,7 @@ class Pianokey(tk.Button):
             if i == self.text:
                 sound.Beep(Audiofreq[n],1000)                
                 if Pianokey.boo:
-                    Pianokey.songlist.append(i)
+                    Pianokey.songlist += i + " "
         
 def filewriter():
     Pianokey.boo = False
@@ -65,12 +60,12 @@ def filewriter():
     if not newfile:
         return None
     newfile.write(str(songlist[1:-1]))
-    Pianokey.songlist = []
+    Pianokey.songlist = ""
 
 def filereader():
     filename = filedialog.askopenfilename()
     newfile = open(filename,'r')
-    songlist = reader(newfile, delimiter=',') #I don't know the representation of the datatype the reader returns
+    songlist = reader(newfile, delimiter=' ') #I don't know the representation of the datatype the reader returns
     print(songlist)
     for i in songlist:
         n = buttonlst.index(i)

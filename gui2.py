@@ -40,7 +40,7 @@ buttonlst = ['A','B','C','D','E','F','G','Csharp','Dsharp','Fsharp','Gsharp','As
 
 class Pianokey(tk.Button):
     boo = False
-    songlist = []
+    songlist = ""
     def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=36, width=12, text=self.text,\
@@ -51,7 +51,7 @@ class Pianokey(tk.Button):
             if i == self.text:
                 sound.Beep(Audiofreq[n],1000)                
                 if Pianokey.boo:
-                    Pianokey.songlist.append(i)
+                    Pianokey.songlist += i + " "
         
 def filewriter():
     Pianokey.boo = False
@@ -60,12 +60,12 @@ def filewriter():
     if not newfile:
         return None
     newfile.write(str(songlist[1:-1]))
-    Pianokey.songlist = []
+    Pianokey.songlist = ""
 
 def filereader():
     filename = filedialog.askopenfilename()
     newfile = open(filename,'r')
-    songlist = reader(newfile, delimiter=',') #I don't know the representation of the datatype the reader returns
+    songlist = reader(newfile, delimiter=' ') #I don't know the representation of the datatype the reader returns
     print(songlist)
     for i in songlist:
         n = buttonlst.index(i)
