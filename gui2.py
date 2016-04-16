@@ -5,45 +5,21 @@ from csv import reader
 
 
 master = tk.Tk()
+master.title("Virtual Piano")
 
-Audiofreq = [261,293,329,349,391,440,493,279,311,369,415,466] #just add the frequencies in the order that you put the names in buttonlst
-buttonlst = ['A','B','C','D','E','F','G','Csharp','Dsharp','Fsharp','Gsharp','Asharp']
-
-
-# Each row represents 1 octave - rounded each freq to the nearest whole number; source: http://www.seventhstring.com/resources/notefrequencies.html
-# 9 octaves total; pianos typically go from freq ~28 to 4186
-
-#            C       C#      D       D#      E       F       F#      G       G#      A       A#      B 
-#Audiofreq= [16,     17,     18,     19,     21,     22,     23,     24,     26,     28,     29,     31,\
-#            33,     35,     37,     39,     41,     44,     46,     49,     52,     55,     58,     62,\
-#            65,     69,     73,     78,     82,     87,     92,     98,     104,    110,    116,    124,\
-#            131,    139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,\
-#            262,    277,    294,    311,    330,    349,    370,    392,    415,    440,    466,    494,\
-#            523,    554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,\
-#            1047,   1109,   1175,   1245,   1319,   1397,   1480,   1568,   1661,   1760,   1865,   1976,\
-#            2093,   2217,   2349,   2489,   2637,   2794,   2960,   3136,   3322,   3520,   3729,   3951,\
-#            4186,   4435,   4699,   4978,   5274,   5588,   5920,   6272,   6645,   7040,   7459,   7902]
-
-#buttonlst=['C0', 'Csharp0', 'D0', 'Dsharp0', 'E0', 'F0', 'Fsharp0', 'G0', 'Gsharp0', 'A0', 'Asharp0', 'B0',\
-#           'C1', 'Csharp1', 'D1', 'Dsharp1', 'E1', 'F1', 'Fsharp1', 'G1', 'Gsharp1', 'A1', 'Asharp1', 'B1',\
-#           'C2', 'Csharp2', 'D2', 'Dsharp2', 'E2', 'F2', 'Fsharp2', 'G2', 'Gsharp2', 'A2', 'Asharp2', 'B2',\
-#           'C3', 'Csharp3', 'D3', 'Dsharp3', 'E3', 'F3', 'Fsharp3', 'G3', 'Gsharp3', 'A3', 'Asharp3', 'B3',\
-#           'C4', 'Csharp4', 'D4', 'Dsharp4', 'E4', 'F4', 'Fsharp4', 'G4', 'Gsharp4', 'A4', 'Asharp4', 'B4',\
-#           'C5', 'Csharp5', 'D5', 'Dsharp5', 'E5', 'F5', 'Fsharp5', 'G5', 'Gsharp5', 'A5', 'Asharp5', 'B5',\
-#           'C6', 'Csharp6', 'D6', 'Dsharp6', 'E6', 'F6', 'Fsharp6', 'G6', 'Gsharp6', 'A6', 'Asharp6', 'B6',\
-#           'C7', 'Csharp7', 'D7', 'Dsharp7', 'E7', 'F7', 'Fsharp7', 'G7', 'Gsharp7', 'A7', 'Asharp7', 'B7',\
-#           'C8', 'Csharp8', 'D8', 'Dsharp8', 'E8', 'F8', 'Fsharp8', 'G8', 'Gsharp8', 'A8', 'Asharp8', 'B8']
-
-
-#for i in range(len(Audiofreq)):
-#    globals()[(str(buttonlst[i])+'{}').format(octave) = Pianokey(text=buttonlst[i])
+Audiofreq = [131,   139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,
+             262,   277,    294,    311,    330,    349,    370,    392,    415,    440,    466,    494,
+             523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,] #just add the frequencies in the order that you put the names in buttonlst
+buttonlst = ['C3',  'C#3',  'D3',   'D#3',  'E3',   'F3',   'F#3',  'G3',   'G#3',  'A3',   'A#3',  'B3',          
+             'C4',  'C#4',  'D4',   'D#4',  'E4',   'F4',   'F#4',  'G4',   'G#4',  'A4',   'A#4',  'B4',
+             'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5', ]
 
 class Pianokey(tk.Button):
     boo = False
     songlist = ""
     def __init__(self, text):
         self.text = text
-        tk.Button.__init__(self, master=master, height=36, width=12, text=self.text,\
+        tk.Button.__init__(self, master=master, height=21, width=7, text=self.text,\
                            command=self.callback, bg="white")
         
     def callback(self): #will need to eventually pass 'event' as an argument
@@ -52,7 +28,20 @@ class Pianokey(tk.Button):
                 sound.Beep(Audiofreq[n],1000)                
                 if Pianokey.boo:
                     Pianokey.songlist += i + " "
-        
+                    
+class Blackkey(Pianokey):
+    def __init__(self, text):
+        self.text = text
+        tk.Button.__init__(self, master=master, height=9, width=5, text=self.text,\
+                           command=self.callback, bg="black", fg="white")
+
+class otherkeys(tk.Button):
+    def __init__(self,text,command):
+        self.command = command
+        self.text = text
+        tk.Button.__init__(self, master=master,text=self.text,width=5,\
+        font=("Arial",24,"bold"),command=self.command)
+
 def filewriter():
     Pianokey.boo = False
     songlist = Pianokey.songlist
@@ -76,70 +65,141 @@ def filereader():
 def songrecorder():
     Pianokey.boo = True
 
-class Blackkey(Pianokey):
-    def __init__(self, text):
-        self.text = text
-        tk.Button.__init__(self, master=master, height=15, width=8, text=self.text,\
-                           command=self.callback, bg="black", fg="white")
 
-class otherkeys(tk.Button):
-    def __init__(self,text,command):
-        self.command = command
-        self.text = text
-        tk.Button.__init__(self, master=master,text=self.text,width=5,\
-        font=("Arial",24,"bold"),command=self.command)
 
-C = Pianokey(text='C')
-C.grid(row=1, column=0)
-#C.bind('<Button-1>', Pianokey.callback('<Button-1>',C)) #we might need these later
+#####Start of keys#####
 
-D = Pianokey(text='D')
-D.grid(row=1, column=1)
-#D.bind('<Button-2>', Pianokey.callback('<Button-2>',D))
+### Octave 3 ###
+        
+C3 = Pianokey(text='C3')
+C3.grid(row=1, column=0)
+#C3.bind('<Button-1>', Pianokey.callback('<Button-1>',C3)) #we might need these later
 
-E = Pianokey(text='E')
-E.grid(row=1, column=2)
-#E.bind('<Button-3>', Pianokey.callback('<Button-3>',E))
+D3 = Pianokey(text='D3')
+D3.grid(row=1, column=1)
+#D3.bind('<Button-2>', Pianokey.callback('<Button-2>',D3))
 
-F = Pianokey(text='F')
-F.grid(row=1, column=3)
-#F.bind('<Button-4>', Pianokey.callback('<Button-4>',F))
+E3 = Pianokey(text='E3')
+E3.grid(row=1, column=2)
+#E3.bind('<Button-3>', Pianokey.callback('<Button-3>',E3))
 
-G = Pianokey(text='G')
-G.grid(row=1, column=4)
-#G.bind('<Button-5>', Pianokey.callback('<Button-5>',G))
+F3 = Pianokey(text='F3')
+F3.grid(row=1, column=3)
+#F3.bind('<Button-4>', Pianokey.callback('<Button-4>',F3))
 
-A = Pianokey(text='A')
-A.grid(row=1, column=5)
-#A.bind('<Button-6>', Pianokey.callback('<Button-6>',A))
+G3 = Pianokey(text='G3')
+G3.grid(row=1, column=4)
+#G3.bind('<Button-5>', Pianokey.callback('<Button-5>',G3))
 
-B = Pianokey(text='B')
-B.grid(row=1, column=6)
-#B.bind('<Button-7>', Pianokey.callback('<Button-7>',B))
+A3 = Pianokey(text='A3')
+A3.grid(row=1, column=5)
+#A3.bind('<Button-6>', Pianokey.callback('<Button-6>',A3))
 
-Csharp = Blackkey(text='Csharp')
-Csharp.grid(row=1, column=0, columnspan=2, sticky="N")
+B3 = Pianokey(text='B3')
+B3.grid(row=1, column=6)
+#B3.bind('<Button-7>', Pianokey.callback('<Button-7>',B3))
 
-Dsharp = Blackkey(text='Dsharp')
-Dsharp.grid(row=1, column=1, columnspan=2, sticky="N")
+Csharp3 = Blackkey(text='C#3')
+Csharp3.grid(row=1, column=0, columnspan=2, sticky="N")
 
-Fsharp = Blackkey(text='Fsharp')
-Fsharp.grid(row=1, column=3, columnspan=2, sticky="N")
+Dsharp3 = Blackkey(text='D#3')
+Dsharp3.grid(row=1, column=1, columnspan=2, sticky="N")
 
-Gsharp = Blackkey(text='Gsharp')
-Gsharp.grid(row=1, column=4, columnspan=2, sticky="N")
+Fsharp3 = Blackkey(text='F#3')
+Fsharp3.grid(row=1, column=3, columnspan=2, sticky="N")
 
-Asharp = Blackkey(text='Asharp')
-Asharp.grid(row=1, column=5, columnspan=2, sticky="N")
+Gsharp3 = Blackkey(text='G#3')
+Gsharp3.grid(row=1, column=4, columnspan=2, sticky="N")
+
+Asharp3 = Blackkey(text='A#3')
+Asharp3.grid(row=1, column=5, columnspan=2, sticky="N")
+
+#### Octave 4 ####
+
+C4 = Pianokey(text='C4')
+C4.grid(row=1, column=7)
+
+D4 = Pianokey(text='D4')
+D4.grid(row=1, column=8)
+
+E4 = Pianokey(text='E4')
+E4.grid(row=1, column=9)
+
+F4 = Pianokey(text='F4')
+F4.grid(row=1, column=10)
+
+G4 = Pianokey(text='G4')
+G4.grid(row=1, column=11)
+
+A4 = Pianokey(text='A4')
+A4.grid(row=1, column=12)
+
+B4 = Pianokey(text='B4')
+B4.grid(row=1, column=13)
+
+Csharp4 = Blackkey(text='C#4')
+Csharp4.grid(row=1, column=7, columnspan=2, sticky="N")
+
+Dsharp4 = Blackkey(text='D#4')
+Dsharp4.grid(row=1, column=8, columnspan=2, sticky="N")
+
+Fsharp4 = Blackkey(text='F#4')
+Fsharp4.grid(row=1, column=10, columnspan=2, sticky="N")
+
+Gsharp4 = Blackkey(text='G#4')
+Gsharp4.grid(row=1, column=11, columnspan=2, sticky="N")
+
+Asharp4 = Blackkey(text='A#4')
+Asharp4.grid(row=1, column=12, columnspan=2, sticky="N")
+
+##### Octave 5 #####
+
+C5 = Pianokey(text='C5')
+C5.grid(row=1, column=14)
+
+D5 = Pianokey(text='D5')
+D5.grid(row=1, column=15)
+
+E5 = Pianokey(text='E5')
+E5.grid(row=1, column=16)
+
+F5 = Pianokey(text='F5')
+F5.grid(row=1, column=17)
+
+G5 = Pianokey(text='G5')
+G5.grid(row=1, column=18)
+
+A5 = Pianokey(text='A5')
+A5.grid(row=1, column=19)
+
+B5 = Pianokey(text='B5')
+B5.grid(row=1, column=20)
+
+Csharp5 = Blackkey(text='C#5')
+Csharp5.grid(row=1, column=14, columnspan=2, sticky="N")
+
+Dsharp5 = Blackkey(text='D#5')
+Dsharp5.grid(row=1, column=15, columnspan=2, sticky="N")
+
+Fsharp5 = Blackkey(text='F#5')
+Fsharp5.grid(row=1, column=17, columnspan=2, sticky="N")
+
+Gsharp5 = Blackkey(text='G#5')
+Gsharp5.grid(row=1, column=18, columnspan=2, sticky="N")
+
+Asharp5 = Blackkey(text='A#5')
+Asharp5.grid(row=1, column=19, columnspan=2, sticky="N")
+
+######End of keys######
 
 record = otherkeys(text='record', command=songrecorder)
-record.grid(row=2,columnspan=2)
+record.grid(row=2, column=6, columnspan=2)
 
 play = otherkeys(text='play', command=filereader)
-play.grid(row=2,column=3,columnspan=2)
+play.grid(row=2, column=9, columnspan=2)
 
 stop = otherkeys(text='stop', command=filewriter)
-stop.grid(row=2,column=5,columnspan=2)
+stop.grid(row=2, column=12, columnspan=2)
 
 master.resizable(width=False, height=False)
 
