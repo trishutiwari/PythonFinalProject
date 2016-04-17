@@ -1,4 +1,5 @@
 from tkinter import filedialog
+from tkinter import messagebox
 import tkinter as tk
 import winsound as sound
 from csv import reader, writer
@@ -65,11 +66,20 @@ def filereader():
             sound.Beep(Audiofreq[n],1000)
     newfile.close()
 
-
 def songrecorder():
     Pianokey.boo = True
 
-#TO DO: what if user records but never stops and exits application?
+def on_closing():
+    if Pianokey.boo == True:
+        answer = messagebox.askyesnocancel("Quit", "You're still recording! Do you want to save?")
+        if answer == None:
+            return None
+        if answer == True:
+            filewriter()
+        master.destroy()
+    elif Pianokey.boo == False:
+        master.destroy()
+
 #might want to do: change the color of a key when that key is played from the recorded files
 
 #####Start of keys#####
@@ -207,6 +217,8 @@ stop = otherkeys(text='stop', command=filewriter)
 stop.grid(row=2, column=12, columnspan=2)
 
 master.resizable(width=False, height=False)
+
+master.protocol("WM_DELETE_WINDOW", on_closing)
 
 master.mainloop()
 
