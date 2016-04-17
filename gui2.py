@@ -1,7 +1,7 @@
 from tkinter import filedialog
 import tkinter as tk
 import winsound as sound
-from csv import reader
+from csv import reader, writer
 
 
 master = tk.Tk()
@@ -9,14 +9,14 @@ master.title("Virtual Piano")
 
 Audiofreq = [131,   139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,
              262,   277,    294,    311,    330,    349,    370,    392,    415,    440,    466,    494,
-             523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,] #just add the frequencies in the order that you put the names in buttonlst
+             523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,]
 buttonlst = ['C3',  'C#3',  'D3',   'D#3',  'E3',   'F3',   'F#3',  'G3',   'G#3',  'A3',   'A#3',  'B3',          
              'C4',  'C#4',  'D4',   'D#4',  'E4',   'F4',   'F#4',  'G4',   'G#4',  'A4',   'A#4',  'B4',
              'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5', ]
 
 class Pianokey(tk.Button):
     boo = False
-    songlist = ""
+    songlist = []
     def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=21, width=7, text=self.text,\
@@ -27,7 +27,7 @@ class Pianokey(tk.Button):
             if i == self.text:
                 sound.Beep(Audiofreq[n],1000)                
                 if Pianokey.boo:
-                    Pianokey.songlist += i + " "
+                    Pianokey.songlist.append(i)
                     
 class Blackkey(Pianokey):
     def __init__(self, text):
@@ -45,27 +45,32 @@ class otherkeys(tk.Button):
 def filewriter():
     Pianokey.boo = False
     songlist = Pianokey.songlist
-    newfile = filedialog.asksaveasfile(mode='w',filetypes=(('text files','.txt'),))
+    print(songlist)
+    newfile = filedialog.asksaveasfile(mode='w',filetypes=(('csv file','.csv'),))
     if not newfile:
         return None
-    newfile.write(str(songlist[1:-1]))
-    Pianokey.songlist = ""
+    csvwriter= writer(newfile)
+    for i in songlist:
+        csvwriter.writerow([i])
+    Pianokey.songlist = []
 
 def filereader():
     filename = filedialog.askopenfilename()
     newfile = open(filename,'r')
-    songlist = reader(newfile, delimiter=' ') #I don't know the representation of the datatype the reader returns
-    print(songlist)
+    songlist = reader(newfile) 
+    print("from reader",songlist)
     for i in songlist:
-        n = buttonlst.index(i)
-        sound.Beep(Audiofreq[n],1000)
+        if ''.join(i) != '':
+            n = buttonlst.index(''.join(i))
+            sound.Beep(Audiofreq[n],1000)
     newfile.close()
 
 
 def songrecorder():
     Pianokey.boo = True
 
-
+#TO DO: what if user records but never stops and exits application?
+#might want to do: change the color of a key when that key is played from the recorded files
 
 #####Start of keys#####
 
