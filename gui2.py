@@ -3,7 +3,7 @@ from tkinter import messagebox
 import tkinter as tk
 import winsound as sound
 from csv import reader, writer
-
+from datetime import *
 
 master = tk.Tk()
 master.title("Virtual Piano")
@@ -20,23 +20,24 @@ class Pianokey(tk.Button):
     songlist = []
     def __init__(self, text):
         self.text = text
+        self.original_color = "white"
         tk.Button.__init__(self, master=master, height=21, width=7, text=self.text,\
                            command=self.callback, bg="white")
         
     def callback(self): #will need to eventually pass 'event' as an argument
         for n,i in enumerate(buttonlst):
             if i == self.text:
-                sound.Beep(Audiofreq[n],1000)                
+                sound.Beep(Audiofreq[n],1000)
                 if Pianokey.boo:
                     Pianokey.songlist.append(i)
                     
-class Blackkey(tk.Button):
+class Blackkey(Pianokey):
     def __init__(self, text):
         self.text = text
+        self.original_color = "black"
         tk.Button.__init__(self, master=master, height=9, width=5, text=self.text,\
-                           command=Pianokey.callback, bg="black", fg="white")
-                           
-
+                           command=self.callback, bg="black", fg="white")
+        
 class otherkeys(tk.Button):
     def __init__(self,text,command):
         self.command = command
@@ -65,14 +66,14 @@ def filereader():
         if ''.join(i) != '':
             n = buttonlst.index(''.join(i))
             b = buttonobjects[n]
-            b.configure(background="yellow")
+            b.configure(bg="yellow")
             b.after(500,colorchanger(b))
             sound.Beep(Audiofreq[n],1000)
     newfile.close()
 
 def colorchanger(b):
-    b.configure(background=b.bg) #I keep getting the error: AttributeError: 'Pianokey' object has no attribute 'bg'
-
+    b.configure(bg=b.original_color)
+    
 def songrecorder():
     Pianokey.boo = True
 
