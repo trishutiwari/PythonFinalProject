@@ -30,11 +30,12 @@ class Pianokey(tk.Button):
                 if Pianokey.boo:
                     Pianokey.songlist.append(i)
                     
-class Blackkey(Pianokey):
+class Blackkey(tk.Button):
     def __init__(self, text):
         self.text = text
         tk.Button.__init__(self, master=master, height=9, width=5, text=self.text,\
-                           command=self.callback, bg="black", fg="white")
+                           command=Pianokey.callback, bg="black", fg="white")
+                           
 
 class otherkeys(tk.Button):
     def __init__(self,text,command):
@@ -63,21 +64,27 @@ def filereader():
     for i in songlist:
         if ''.join(i) != '':
             n = buttonlst.index(''.join(i))
+            b = buttonobjects[n]
+            b.configure(background="yellow")
+            b.after(500,colorchanger(b))
             sound.Beep(Audiofreq[n],1000)
     newfile.close()
+
+def colorchanger(b):
+    b.configure(background=b.bg) #I keep getting the error: AttributeError: 'Pianokey' object has no attribute 'bg'
 
 def songrecorder():
     Pianokey.boo = True
 
 def on_closing():
-    if Pianokey.boo == True:
+    if Pianokey.boo:
         answer = messagebox.askyesnocancel("Quit", "You're still recording! Do you want to save?")
         if answer == None:
             return None
         if answer == True:
             filewriter()
         master.destroy()
-    elif Pianokey.boo == False:
+    else:
         master.destroy()
 
 #might want to do: change the color of a key when that key is played from the recorded files
@@ -206,6 +213,9 @@ Asharp5 = Blackkey(text='A#5')
 Asharp5.grid(row=1, column=19, columnspan=2, sticky="N")
 
 ######End of keys######
+buttonobjects = [C3, Csharp3, D3, Dsharp3, E3, F3, Fsharp3, G3, Gsharp3, A3, Asharp3, B3,
+                 C4, Csharp4, D4, Dsharp4, E4, F4, Fsharp4, G4, Gsharp4, A4, Asharp4, B4,
+                 C5, Csharp5, D5, Dsharp5, E5, F5, Fsharp5, G5, Gsharp5, A5, Asharp5, B5]
 
 record = otherkeys(text='record', command=songrecorder)
 record.grid(row=2, column=6, columnspan=2)
@@ -220,5 +230,8 @@ master.resizable(width=False, height=False)
 
 master.protocol("WM_DELETE_WINDOW", on_closing)
 
-master.mainloop()
+try:
+    master.mainloop()
+except KeyboardInterrupt:
+    master.destroy()
 
