@@ -4,6 +4,7 @@ import tkinter as tk
 import winsound as sound
 from csv import reader, writer
 from datetime import *
+from time import sleep
 
 master = tk.Tk()
 master.title("Virtual Piano")
@@ -24,10 +25,10 @@ class Pianokey(tk.Button):
         tk.Button.__init__(self, master=master, height=21, width=7, text=self.text,\
                            command=self.callback, bg="white")
         
-    def callback(self): #will need to eventually pass 'event' as an argument
+    def callback(self):
         for n,i in enumerate(buttonlst):
             if i == self.text:
-                sound.Beep(Audiofreq[n],1000)
+                sound.Beep(Audiofreq[n],500)
                 if Pianokey.boo:
                     Pianokey.songlist.append(i)
                     
@@ -48,27 +49,26 @@ class otherkeys(tk.Button):
 def filewriter():
     Pianokey.boo = False
     songlist = Pianokey.songlist
-    print(songlist)
     newfile = filedialog.asksaveasfile(mode='w',filetypes=(('csv file','.csv'),))
     if not newfile:
         return None
     csvwriter= writer(newfile)
     for i in songlist:
         csvwriter.writerow([i])
-    Pianokey.songlist = []
+        Pianokey.songlist = []
 
 def filereader():
     filename = filedialog.askopenfilename()
     newfile = open(filename,'r')
     songlist = reader(newfile) 
-    print("from reader",songlist)
     for i in songlist:
         if ''.join(i) != '':
             n = buttonlst.index(''.join(i))
-            b = buttonobjects[n]
-            b.configure(bg="yellow")
-            b.after(500,colorchanger(b))
-            sound.Beep(Audiofreq[n],1000)
+            #b = buttonobjects[n]
+            #b.configure(bg="yellow")
+            #b.after(500,colorchanger(b)) #I realized that I'm not using the after method correctly. I don't understand how though
+            sound.Beep(Audiofreq[n],500)
+            sleep(0.25)
     newfile.close()
 
 def colorchanger(b):
@@ -88,7 +88,6 @@ def on_closing():
     else:
         master.destroy()
 
-#might want to do: change the color of a key when that key is played from the recorded files
 
 #####Start of keys#####
 
@@ -231,8 +230,10 @@ master.resizable(width=False, height=False)
 
 master.protocol("WM_DELETE_WINDOW", on_closing)
 
+
 try:
     master.mainloop()
-except KeyboardInterrupt:
+except Exception:
+    tk.messagebox.showerror("Unexpected Error", "Unfortunately, Virtual Piano has stopped working")
     master.destroy()
 
