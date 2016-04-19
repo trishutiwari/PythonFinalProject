@@ -3,7 +3,6 @@ from tkinter import messagebox
 import tkinter as tk
 import winsound as sound
 from csv import reader, writer
-from datetime import *
 from time import sleep
 
 try:
@@ -19,6 +18,7 @@ try:
 
     class Pianokey(tk.Button):
         boo = False
+        n = True
         songlist = []
         def __init__(self, text):
             self.text = text
@@ -29,7 +29,9 @@ try:
         def callback(self):
             for n,i in enumerate(buttonlst):
                 if i == self.text:
+                    self.configure(bg="red")
                     sound.Beep(Audiofreq[n],500)
+                    master.after(500,lambda: self.configure(bg=self.original_color))
                     if Pianokey.boo:
                         Pianokey.songlist.append(i)
                     
@@ -44,7 +46,7 @@ try:
         def __init__(self,text,command):
             self.command = command
             self.text = text
-            tk.Button.__init__(self, master=master,text=self.text,width=5,\
+            tk.Button.__init__(self, master=master,text=self.text,\
             font=("Arial",24,"bold"),command=self.command)
 
     def filewriter():
@@ -63,17 +65,18 @@ try:
         newfile = open(filename,'r')
         songlist = reader(newfile) 
         for i in songlist:
-            if ''.join(i) != '':
+            if ''.join(i) != '' and Pianokey.n:
+                print(Pianokey.n)
                 n = buttonlst.index(''.join(i))
-                #b = buttonobjects[n]
-                #b.configure(bg="yellow")
-                #b.after(500,colorchanger(b)) #I realized that I'm not using the after method correctly. I don't understand how though
+                b = buttonobjects[n]
+                b.configure(bg="yellow")
                 sound.Beep(Audiofreq[n],500)
+                master.after(500,lambda: b.configure(bg=b.original_color)) 
                 sleep(0.25)
         newfile.close()
 
-    #def colorchanger(b):
-     #   b.configure(bg=b.original_color)
+    def stopplaying():
+        Pianokey.n = False
     
     def songrecorder():
         Pianokey.boo = True
@@ -218,13 +221,16 @@ try:
                      C5, Csharp5, D5, Dsharp5, E5, F5, Fsharp5, G5, Gsharp5, A5, Asharp5, B5]
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=2, column=6, columnspan=2)
+    record.grid(row=2, column=2, columnspan=3)
 
-    play = otherkeys(text='play', command=filereader)
-    play.grid(row=2, column=9, columnspan=2)
+    stop = otherkeys(text='stop recording', command=filewriter)
+    stop.grid(row=2, column=5, columnspan=5)    
     
-    stop = otherkeys(text='stop', command=filewriter)
-    stop.grid(row=2, column=12, columnspan=2)
+    play = otherkeys(text='play', command=filereader)
+    play.grid(row=2, column=10, columnspan=2)
+    
+    stop = otherkeys(text='stop playing', command=stopplaying)
+    stop.grid(row=2, column=14, columnspan=4)
     
     master.resizable(width=False, height=False)
     
