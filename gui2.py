@@ -258,13 +258,13 @@ try:
     rightmargin.grid(row=1, column=22)
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=2, column=3, columnspan=3)
+    record.grid(row=3, column=3, columnspan=3)
 
     stop = otherkeys(text='stop recording', command=filewriter)
-    stop.grid(row=2, column=8, columnspan=5)    
+    stop.grid(row=3, column=8, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=2, column=15, columnspan=2)
+    play.grid(row=3, column=15, columnspan=2)
     
     master.resizable(width=False, height=False)
     
