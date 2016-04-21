@@ -8,15 +8,18 @@ from time import sleep
 try:
     master = tk.Tk()
     master.title("Virtual Piano")
-
+    
+    #the frequencies of each pianokey
     Audiofreq = [131,   139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,
              262,   277,    294,    311,    330,    349,    370,    392,    415,    440,    466,    494,
              523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,]
+    
+    #the names of each pianokey
     buttonlst = ['C3',  'C#3',  'D3',   'D#3',  'E3',   'F3',   'F#3',  'G3',   'G#3',  'A3',   'A#3',  'B3',          
              'C4',  'C#4',  'D4',   'D#4',  'E4',   'F4',   'F#4',  'G4',   'G#4',  'A4',   'A#4',  'B4',
              'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5', ]
 
-    
+    #creating a class to create each white pianokey    
     class Pianokey(tk.Button):
         boo = False
         songlist = []
@@ -27,16 +30,20 @@ try:
             tk.Button.__init__(self, master=master, height=21, width=7, text=self.text,\
                            command=self.callback, bg="white")
         
+        #this function gets called when a key is played
         def callback(self):
             for n,i in enumerate(buttonlst):
                 if i == self.text:
+                    #changes the color of the key while its being played
                     self.configure(bg="blue")
                     master.update()
                     sound.Beep(Audiofreq[n],500)
                     master.after(1,lambda: self.configure(bg=self.original_color))
+#if true, then all the key names are appended to songlist--we use this when the user wants to record the song                    
                     if Pianokey.boo:
                         Pianokey.songlist.append(i)
-                    
+    
+    #a class for the black keys                
     class Blackkey(Pianokey):
         def __init__(self, text):
             self.text = text
@@ -44,6 +51,7 @@ try:
             tk.Button.__init__(self, master=master, height=9, width=5, text=self.text,\
                                command=self.callback, bg="black", fg="white")
         
+    #a class for the other buttons-record, play, stop
     class otherkeys(tk.Button):
         def __init__(self,text,command):
             self.command = command
@@ -51,34 +59,48 @@ try:
             tk.Button.__init__(self, master=master,text=self.text,\
             font=("Arial",24,"bold"),command=self.command)
 
+    #this fucntion gets called when the user presses "stop"--it writes 'songlist' to a csv file
     def filewriter():
-        Pianokey.boo = False
+        Pianokey.boo = False #so that the callback function stops appending the key names to songlist 
         songlist = Pianokey.songlist
-        newfile = filedialog.asksaveasfile(mode='w',filetypes=(('csv file','.csv'),))
+        newfile = filedialog.asksaveasfile(defaultextension='.csv', mode='w',filetypes=(('csv file','.csv'),))
         if not newfile:
             return None
         csvwriter= writer(newfile)
+        #writes the name of each key as a separate row in the file
         for i in songlist:
             csvwriter.writerow([i])
-            Pianokey.songlist = []
+        #re-initialize songlist so that if the user wants to save another song, then the app doesn't continue to append to the same old list
+        Pianokey.songlist = []
 
+    #reads any csv file and plays the buttons it reads
     def filereader():
-        Pianokey.play = True
-        filename = filedialog.askopenfilename()
-        newfile = open(filename,'r')
-        songlist = reader(newfile) 
-        for i in songlist:
-            if ''.join(i) != '':
-                print(Pianokey.dontstop)
-                n = buttonlst.index(''.join(i))
-                b = buttonobjects[n]
-                b.invoke() 
-                sleep(0.25)
+        filename = filedialog.askopenfilename(defaultextension=".csv",filetypes=(('csv file','.csv'),))
+        try:
+            newfile = open(filename,'r')
+        except FileNotFoundError:
+            pass
+        songlist = reader(newfile)
+        try:        
+            for i in songlist:
+                if ''.join(i) != '':
+                    #get the button its playing
+                    n = buttonlst.index(''.join(i))
+                    b = buttonobjects[n]
+                    #call the callback function for that button                
+                    b.invoke()
+                    # sleeps for a quarter second so that it doesn't replay too fast
+                    sleep(0.25)
+        #if the user chooses a csv file that is NOT a piano recording
+        except ValueError:
+            tk.messagebox.showerror(title="Incorrect file",message="This is not a Virtual Piano recording. Please choose a correct file")
+            filereader()
         newfile.close()
     
     def songrecorder():
         Pianokey.boo = True
 
+    #if the user closes the app while recording, but without saving
     def on_closing():
         if Pianokey.boo:
             answer = messagebox.askyesnocancel("Quit", "You're still recording! Do you want to save?")
@@ -213,7 +235,8 @@ try:
     Asharp5 = Blackkey(text='A#5')
     Asharp5.grid(row=1, column=19, columnspan=2, sticky="N")
     
-    ######End of keys######
+######End of keys######
+    
     buttonobjects = [C3, Csharp3, D3, Dsharp3, E3, F3, Fsharp3, G3, Gsharp3, A3, Asharp3, B3,
                      C4, Csharp4, D4, Dsharp4, E4, F4, Fsharp4, G4, Gsharp4, A4, Asharp4, B4,
                      C5, Csharp5, D5, Dsharp5, E5, F5, Fsharp5, G5, Gsharp5, A5, Asharp5, B5]
@@ -230,7 +253,8 @@ try:
     master.resizable(width=False, height=False)
     
     master.protocol("WM_DELETE_WINDOW", on_closing)
-    
+
+#to handle any exceptions that might occur    
 except Exception:
     tk.messagebox.showerror("Unexpected Error", "Unfortunately, Virtual Piano has stopped working")    
     master.destroy()
@@ -239,4 +263,4 @@ try:
     master.mainloop()
 except Exception:
         tk.messagebox.showerror("Unexpected Error", "Unfortunately, Virtual Piano has stopped working")
-        #does something wierd if you destroy master for this one
+        #does something wierd if you destroy master for this one, so we don't destroy the master
