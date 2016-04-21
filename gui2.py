@@ -16,10 +16,11 @@ try:
              'C4',  'C#4',  'D4',   'D#4',  'E4',   'F4',   'F#4',  'G4',   'G#4',  'A4',   'A#4',  'B4',
              'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5', ]
 
+    
     class Pianokey(tk.Button):
         boo = False
-        n = True
         songlist = []
+        dontstop = True
         def __init__(self, text):
             self.text = text
             self.original_color = "white"
@@ -29,9 +30,10 @@ try:
         def callback(self):
             for n,i in enumerate(buttonlst):
                 if i == self.text:
-                    self.configure(bg="red")
+                    self.configure(bg="blue")
+                    master.update()
                     sound.Beep(Audiofreq[n],500)
-                    master.after(500,lambda: self.configure(bg=self.original_color))
+                    master.after(1,lambda: self.configure(bg=self.original_color))
                     if Pianokey.boo:
                         Pianokey.songlist.append(i)
                     
@@ -61,22 +63,18 @@ try:
             Pianokey.songlist = []
 
     def filereader():
+        Pianokey.play = True
         filename = filedialog.askopenfilename()
         newfile = open(filename,'r')
         songlist = reader(newfile) 
         for i in songlist:
-            if ''.join(i) != '' and Pianokey.n:
-                print(Pianokey.n)
+            if ''.join(i) != '':
+                print(Pianokey.dontstop)
                 n = buttonlst.index(''.join(i))
                 b = buttonobjects[n]
-                b.configure(bg="yellow")
-                sound.Beep(Audiofreq[n],500)
-                master.after(500,lambda: b.configure(bg=b.original_color)) 
+                b.invoke() 
                 sleep(0.25)
         newfile.close()
-
-    def stopplaying():
-        Pianokey.n = False
     
     def songrecorder():
         Pianokey.boo = True
@@ -221,16 +219,13 @@ try:
                      C5, Csharp5, D5, Dsharp5, E5, F5, Fsharp5, G5, Gsharp5, A5, Asharp5, B5]
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=2, column=2, columnspan=3)
+    record.grid(row=2, column=3, columnspan=3)
 
     stop = otherkeys(text='stop recording', command=filewriter)
-    stop.grid(row=2, column=5, columnspan=5)    
+    stop.grid(row=2, column=8, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=2, column=10, columnspan=2)
-    
-    stop = otherkeys(text='stop playing', command=stopplaying)
-    stop.grid(row=2, column=14, columnspan=4)
+    play.grid(row=2, column=15, columnspan=2)
     
     master.resizable(width=False, height=False)
     
