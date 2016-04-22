@@ -8,6 +8,7 @@ from time import sleep
 try:
     master = tk.Tk()
     master.title("Virtual Piano")
+    master.config(bg="gray75")
     
     #the frequencies of each pianokey
     Audiofreq = [131,   139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,
@@ -35,11 +36,12 @@ try:
             for n,i in enumerate(buttonlst):
                 if i == self.text:
                     #changes the color of the key while its being played
-                    self.configure(bg="blue")
+                    self.configure(bg="turquoise3")
                     master.update()
                     sound.Beep(Audiofreq[n],500)
-                    master.after(1,lambda: self.configure(bg=self.original_color))
-#if true, then all the key names are appended to songlist--we use this when the user wants to record the song                    
+                    self.configure(bg=self.original_color)
+                    master.update()
+		    #if true, then all the key names are appended to songlist--we use this when the user wants to record the song                    
                     if Pianokey.boo:
                         Pianokey.songlist.append(i)
     
@@ -57,7 +59,7 @@ try:
             self.command = command
             self.text = text
             tk.Button.__init__(self, master=master,text=self.text,\
-            font=("Arial",24,"bold"),command=self.command)
+            font=("Arial",24,"bold"),command=self.command, bg="SkyBlue3")
 
     #this fucntion gets called when the user presses "stop"--it writes 'songlist' to a csv file
     def filewriter():
@@ -79,7 +81,7 @@ try:
         try:
             newfile = open(filename,'r')
         except FileNotFoundError:
-            pass
+            return None
         songlist = reader(newfile)
         try:        
             for i in songlist:
@@ -258,13 +260,13 @@ try:
     rightmargin.grid(row=1, column=22)
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=2, column=3, columnspan=3)
+    record.grid(row=3, column=4, columnspan=3)
 
     stop = otherkeys(text='stop recording', command=filewriter)
-    stop.grid(row=2, column=8, columnspan=5)    
+    stop.grid(row=3, column=9, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=2, column=15, columnspan=2)
+    play.grid(row=3, column=16, columnspan=2)
     
     master.resizable(width=False, height=False)
     
