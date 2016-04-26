@@ -13,18 +13,21 @@ try:
     #the frequencies of each pianokey
     Audiofreq = [131,   139,    147,    156,    165,    175,    185,    196,    208,    220,    233,    247,
              262,   277,    294,    311,    330,    349,    370,    392,    415,    440,    466,    494,
-             523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988,]
+             523,   554,    587,    622,    659,    698,    740,    784,    831,    880,    932,    988]
     
     #the names of each pianokey
     buttonlst = ['C3',  'C#3',  'D3',   'D#3',  'E3',   'F3',   'F#3',  'G3',   'G#3',  'A3',   'A#3',  'B3',          
              'C4',  'C#4',  'D4',   'D#4',  'E4',   'F4',   'F#4',  'G4',   'G#4',  'A4',   'A#4',  'B4',
-             'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5', ]
+             'C5',  'C#5',  'D5',   'D#5',  'E5',   'F5',   'F#5',  'G5',   'G#5',  'A5',   'A#5',  'B5']
 
     #creating a class to create each white pianokey    
     class Pianokey(tk.Button):
+        dontstop = True        
         boo = False
         songlist = []
         dontstop = True
+        pause = False
+        keyindex = 0
         def __init__(self, text):
             self.text = text
             self.original_color = "white"
@@ -85,14 +88,24 @@ try:
         songlist = reader(newfile)
         try:        
             for i in songlist:
-                if ''.join(i) != '':
-                    #get the button its playing
-                    n = buttonlst.index(''.join(i))
-                    b = buttonobjects[n]
-                    #call the callback function for that button                
-                    b.invoke()
-                    # sleeps for a quarter second so that it doesn't replay too fast
-                    sleep(0.25)
+                if ''.join(i) != '' :
+                    if Pianokey.dontstop and not Pianokey.pause: #checks if user clicked stop
+                        #get the button its playing
+                        n = buttonlst.index(''.join(i))
+                        b = buttonobjects[n]
+                        #call the callback function for that button                
+                        b.invoke()
+                        # sleeps for a quarter second so that it doesn't replay too fast
+                        sleep(0.25)
+                    elif Pianokey.pause:
+                        n = buttonlst.index(''.join(i))
+                        b = buttonobjects[n]
+                        Pianokey.songlist.append(b)
+                    elif Pianokey.dontstop:#if user clicks stop, then leaves the function
+                        Pianokey.songlist = []                        
+                        break                        
+            Pianokey.pause = False                        
+            Pianokey.pause = False
         #if the user chooses a csv file that is NOT a piano recording
         except ValueError:
             tk.messagebox.showerror(title="Incorrect file",message="This is not a Virtual Piano recording. Please choose a correct file")
@@ -101,15 +114,31 @@ try:
     
     def songrecorder():
         Pianokey.boo = True
+    
+    def stopplaying():
+        Pianokey.songlist = []
+        Pianokey.dontstop = False
 
+    def pause():
+        Pianokey.pause = True
+        
+    def resume():
+        for b in Pianokey.songlist:
+            b.invoke()
+        Pianokey.songlist = []
+        Pianokey.pause = False
+        
     #if the user closes the app while recording, but without saving
     def on_closing():
         if Pianokey.boo:
             answer = messagebox.askyesnocancel("Quit", "You're still recording! Do you want to save?")
             if answer == None:
+                master.destroy()                
                 return None
             elif answer:
                 filewriter()
+                master.destroy()
+            else:
                 master.destroy()
         else:
             master.destroy()
@@ -260,13 +289,22 @@ try:
     rightmargin.grid(row=1, column=22)
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=3, column=4, columnspan=3)
+    record.grid(row=3, column=2, columnspan=3)
 
     stop = otherkeys(text='stop recording', command=filewriter)
-    stop.grid(row=3, column=9, columnspan=5)    
+    stop.grid(row=3, column=5, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=3, column=16, columnspan=2)
+    play.grid(row=3, column=11, columnspan=2)
+    
+    stop = otherkeys(text='stop', command=stopplaying)
+    stop.grid(row=3, column=13, columnspan=2)
+    
+    pause = otherkeys(text='Pause', command=pause)
+    pause.grid(row=3, column=15, columnspan=2)
+    
+    resume = otherkeys(text='Resume', command=resume)
+    resume.grid(row=3, column=18, columnspan=3)
     
     master.resizable(width=False, height=False)
     
