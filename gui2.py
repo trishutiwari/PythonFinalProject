@@ -94,7 +94,7 @@ try:
         try:        
             for i in songlist1:
                 if ''.join(i) != '' :
-                    if Pianokey.dontstop and not Pianokey.pause: #checks if user clicked pause
+                    if Pianokey.dontstop and not Pianokey.pause: #checks if user clicked pause or stop
                         #get the button its playing
                         n = buttonlst.index(''.join(i))
                         b = buttonobjects[n]
@@ -108,11 +108,11 @@ try:
                         newfile.close()
                         print("1st pause")
                         return None
-                    elif Pianokey.dontstop:#if user clicks stop, then leaves the function
-                        Pianokey.pausedsonglist = []
+                    elif not Pianokey.dontstop:#if user clicks stop, then leaves the function
                         Pianokey.pause = False
-                        newfile.close()
+                        Pianokey.dontstop = True
                         print("stopped")
+                        newfile.close()
                         return None
         #if the user chooses a csv file that is NOT a piano recording
         except ValueError as v:
@@ -125,6 +125,7 @@ try:
         Pianokey.boo = True
     
     def stopplaying():
+        print("got through here")
         Pianokey.pausedsonglist = []
         Pianokey.dontstop = False
 
@@ -141,6 +142,10 @@ try:
                     print("paused")
                     Pianokey.pause = False
                     Pianokey.pauseindex = i
+                    return None
+                elif not Pianokey.dontstop:
+                    Pianokey.dontstop = True
+                    Pianokey.songlist = []
                     return None
                 else:
                     print("resumed")
@@ -311,22 +316,22 @@ try:
     rightmargin.grid(row=1, column=22)
 
     record = otherkeys(text='record', command=songrecorder)
-    record.grid(row=3, column=2, columnspan=3)
+    record.grid(row=3, column=1, columnspan=3)
 
     stop = otherkeys(text='stop recording', command=filewriter)
-    stop.grid(row=3, column=5, columnspan=5)    
+    stop.grid(row=3, column=4, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=3, column=11, columnspan=1)
+    play.grid(row=3, column=9, columnspan=2)
     
-    stop = otherkeys(text='stop', command=stopplaying)
-    stop.grid(row=3, column=13, columnspan=1)
+    stop = otherkeys(text='stop playing', command=stopplaying)
+    stop.grid(row=3, column=11, columnspan=5)
     
     pause = otherkeys(text='Pause', command=pause)
-    pause.grid(row=3, column=15, columnspan=3)
+    pause.grid(row=3, column=16, columnspan=3)
     
     resume = otherkeys(text='Resume', command=resume)
-    resume.grid(row=3, column=18, columnspan=3)
+    resume.grid(row=3, column=19, columnspan=3)
     
     master.resizable(width=False, height=False)
     
