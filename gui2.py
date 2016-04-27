@@ -317,13 +317,13 @@ try:
     stop.grid(row=3, column=5, columnspan=5)    
     
     play = otherkeys(text='play', command=filereader)
-    play.grid(row=3, column=11, columnspan=2)
+    play.grid(row=3, column=11, columnspan=1)
     
     stop = otherkeys(text='stop', command=stopplaying)
-    stop.grid(row=3, column=13, columnspan=2)
+    stop.grid(row=3, column=13, columnspan=1)
     
     pause = otherkeys(text='Pause', command=pause)
-    pause.grid(row=3, column=15, columnspan=2)
+    pause.grid(row=3, column=15, columnspan=3)
     
     resume = otherkeys(text='Resume', command=resume)
     resume.grid(row=3, column=18, columnspan=3)
