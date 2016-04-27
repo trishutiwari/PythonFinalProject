@@ -25,10 +25,10 @@ try:
         dontstop = True        
         boo = False
         songlist = []
-	pausedsonglist = []
+        pausedsonglist = []
         dontstop = True
         pause = False
-        keyindex = 0
+        pauseindex = 0
         def __init__(self, text):
             self.text = text
             self.original_color = "white"
@@ -84,6 +84,11 @@ try:
         filename = filedialog.askopenfilename(defaultextension=".csv",filetypes=(('csv file','.csv'),))
         try:
             newfile = open(filename,'r')
+	    songlist = reader(newfile)
+	    Pianokey.pausedsonglist = list(songlist)
+	    newfile.close()
+	    newfile = open(filename,'r')
+	    songlist = reader(newfile)
         except FileNotFoundError:
             return None
         songlist = reader(newfile)
@@ -99,13 +104,14 @@ try:
                         # sleeps for a quarter second so that it doesn't replay too fast
                         sleep(0.25)
                     elif Pianokey.pause:
-                       	pauseappender(i)
+                        n = buttonlst.index(''.join(i))
+                        Pianokey.pauseindex = n
+                        Pianokey.pause = False
+                        return None
                     elif Pianokey.dontstop:#if user clicks stop, then leaves the function
                         Pianokey.pausedsonglist = []
-                        Pianokey.pause = False                        
-                        Pianokey.pause = False                        
-                        break                        
-            Pianokey.pause = False                        
+                        Pianokey.pause = False
+                        return None
         #if the user chooses a csv file that is NOT a piano recording
         except ValueError:
             tk.messagebox.showerror(title="Incorrect file",message="This is not a Virtual Piano recording. Please choose a correct file")
@@ -121,17 +127,17 @@ try:
 
     def pause():
         Pianokey.pause = True
-    
-    def pauseappender(i):
-	n = buttonlst.index(''.join(i))
-	b = buttonobjects[n]
-        Pianokey.pausedsonglist.append(b)
+        Pianokey.pausedsonglist = []
         
     def resume():
-        for b in Pianokey.songlist:
-            b.invoke()
+        n = Pianokey.pauseindex
+        for i,b in enumerate(Pianokey.pausedsonglist[n:]):
+            if Pianokey.pause:
+                Pianokey.pauseindex = i
+                return None
+            else:
+                b.invoke()
         Pianokey.pausedsonglist = []
-        Pianokey.pause = False
         
     #if the user closes the app while recording, but without saving
     def on_closing():

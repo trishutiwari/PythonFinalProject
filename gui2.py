@@ -83,14 +83,16 @@ try:
     def filereader():
         filename = filedialog.askopenfilename(defaultextension=".csv",filetypes=(('csv file','.csv'),))
         try:
-            newfile = open(filename,'r')
+          newfile = open(filename,'r')
+          songlist = reader(newfile)
+          Pianokey.pausedsonglist = [i[0] for i in list(songlist) if i !=[]] #filters unwanted results
+          newfile.close()
+          newfile = open(filename,'r')
+          songlist1 = reader(newfile)
         except FileNotFoundError:
             return None
-        songlist = reader(newfile)
-        Pianokey.pausedsonglist = list(songlist)#this is not working.
-        print(Pianokey.pausedsonglist)
         try:        
-            for i in songlist:
+            for i in songlist1:
                 if ''.join(i) != '' :
                     if Pianokey.dontstop and not Pianokey.pause: #checks if user clicked pause
                         #get the button its playing
@@ -101,16 +103,20 @@ try:
                         # sleeps for a quarter second so that it doesn't replay too fast
                         sleep(0.25)
                     elif Pianokey.pause:
-                        n = buttonlst.index(''.join(i))
-                        Pianokey.pauseindex = n
+                        Pianokey.pauseindex = Pianokey.pausedsonglist.index(''.join(i))
                         Pianokey.pause = False
+                        newfile.close()
+                        print("1st pause")
                         return None
                     elif Pianokey.dontstop:#if user clicks stop, then leaves the function
                         Pianokey.pausedsonglist = []
                         Pianokey.pause = False
+                        newfile.close()
+                        print("stopped")
                         return None
         #if the user chooses a csv file that is NOT a piano recording
-        except ValueError:
+        except ValueError as v:
+            print(v)
             tk.messagebox.showerror(title="Incorrect file",message="This is not a Virtual Piano recording. Please choose a correct file")
             filereader()
         newfile.close()
@@ -124,17 +130,25 @@ try:
 
     def pause():
         Pianokey.pause = True
-        Pianokey.pausedsonglist = []
         
     def resume():
         n = Pianokey.pauseindex
-        for i,b in enumerate(Pianokey.pausedsonglist[n:]):
-            if Pianokey.pause:
-                Pianokey.pauseindex = i
-                return None
-            else:
-                b.invoke()
-        Pianokey.pausedsonglist = []
+        print(n)
+        print(Pianokey.pausedsonglist)
+        for i,b in enumerate(Pianokey.pausedsonglist):
+            if i >= n:#this doesn't work for multiple pauses a
+                if Pianokey.pause:
+                    print("paused")
+                    Pianokey.pause = False
+                    Pianokey.pauseindex = i
+                    return None
+                else:
+                    print("resumed")
+                    x = buttonlst.index(b)
+                    buttonobjects[x].invoke()
+                    sleep(0.25)
+        Pianokey.pausedsonglist = []            
+        print("reached here")
         
     #if the user closes the app while recording, but without saving
     def on_closing():
