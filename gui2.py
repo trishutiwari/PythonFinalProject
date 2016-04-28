@@ -106,12 +106,10 @@ try:
                         Pianokey.pauseindex = Pianokey.pausedsonglist.index(''.join(i))
                         Pianokey.pause = False
                         newfile.close()
-                        print("1st pause")
                         return None
                     elif not Pianokey.dontstop:#if user clicks stop, then leaves the function
                         Pianokey.pause = False
                         Pianokey.dontstop = True
-                        print("stopped")
                         newfile.close()
                         return None
         #if the user chooses a csv file that is NOT a piano recording
@@ -125,35 +123,32 @@ try:
         Pianokey.boo = True
     
     def stopplaying():
-        print("got through here")
         Pianokey.pausedsonglist = []
         Pianokey.dontstop = False
 
     def pause():
         Pianokey.pause = True
-        
+
+#this gets executed if the user presses resume        
     def resume():
         n = Pianokey.pauseindex
         print(n)
         print(Pianokey.pausedsonglist)
         for i,b in enumerate(Pianokey.pausedsonglist):
-            if i >= n:#this doesn't work for multiple pauses a
-                if Pianokey.pause:
-                    print("paused")
+            if i >= n:
+                if Pianokey.pause: #if user again presses pause after resuming
                     Pianokey.pause = False
                     Pianokey.pauseindex = i
                     return None
-                elif not Pianokey.dontstop:
+                elif not Pianokey.dontstop: #if user presses stop after resuming
                     Pianokey.dontstop = True
                     Pianokey.songlist = []
                     return None
-                else:
-                    print("resumed")
-                    x = buttonlst.index(b)
+                else: 
+                    x = buttonlst.index(b) #if the user just presses resume and just lets the song play without pausing/stopping
                     buttonobjects[x].invoke()
                     sleep(0.25)
-        Pianokey.pausedsonglist = []            
-        print("reached here")
+        Pianokey.pausedsonglist = []
         
     #if the user closes the app while recording, but without saving
     def on_closing():
